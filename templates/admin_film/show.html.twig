@@ -1,0 +1,58 @@
+{% extends 'base.back.html.twig' %}
+
+{% block title %}Film{% endblock %}
+
+{% block body %}
+    <h1>Film</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ film.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ film.titre }}</td>
+            </tr>
+            <tr>
+                <th>Realisation</th>
+                <td>{{ film.realisation }}</td>
+            </tr>
+            <tr>
+                <th>Casting</th>
+                <td>{{ film.casting }}</td>
+            </tr>
+            <tr>
+                <th>Pays</th>
+                <td>{{ film.pays }}</td>
+            </tr>
+            <tr>
+                <th>Duree</th>
+                <td>{{ film.duree }}</td>
+            </tr>
+            <tr>
+                <th>Synopsis</th>
+                <td>{{ film.synopsis }}</td>
+            </tr>
+            <tr>
+                <th>Recompense</th>
+                <td>{{ film.recompense }}</td>
+            </tr>
+            <tr>
+                <th>Distributeur</th>
+                <td>{{ film.distributeur }}</td>
+            </tr>
+            <tr>
+                <th>CoutLocation</th>
+                <td>{{ film.coutLocation }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_film_index') }}">back to list</a>
+
+    <a href="{{ path('app_admin_film_edit', {'id': film.id}) }}">edit</a>
+
+    {{ include('admin_film/_delete_form.html.twig') }}
+{% endblock %}

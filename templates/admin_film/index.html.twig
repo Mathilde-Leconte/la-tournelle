@@ -1,0 +1,51 @@
+{% extends 'base.back.html.twig' %}
+
+{% block title %}Film index{% endblock %}
+
+{% block body %}
+    <h1>Film index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Realisation</th>
+                <th>Casting</th>
+                <th>Pays</th>
+                <th>Duree</th>
+                <th>Synopsis</th>
+                <th>Recompense</th>
+                <th>Distributeur</th>
+                <th>CoutLocation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for film in films %}
+            <tr>
+                <td>{{ film.id }}</td>
+                <td>{{ film.titre }}</td>
+                <td>{{ film.realisation }}</td>
+                <td>{{ film.casting }}</td>
+                <td>{{ film.pays }}</td>
+                <td>{{ film.duree }}</td>
+                <td>{{ film.synopsis }}</td>
+                <td>{{ film.recompense }}</td>
+                <td>{{ film.distributeur }}</td>
+                <td>{{ film.coutLocation }}</td>
+                <td>
+                    <a href="{{ path('app_admin_film_show', {'id': film.id}) }}">show</a>
+                    <a href="{{ path('app_admin_film_edit', {'id': film.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_film_new') }}">Create new</a>
+{% endblock %}
