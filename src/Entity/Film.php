@@ -41,6 +41,9 @@ class Film
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $coutLocation = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -150,6 +153,18 @@ class Film
     public function setCoutLocation(?string $coutLocation): self
     {
         $this->coutLocation = $coutLocation;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }
