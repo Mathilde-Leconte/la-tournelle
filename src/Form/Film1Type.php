@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class Film1Type extends AbstractType
 {
@@ -23,7 +24,7 @@ class Film1Type extends AbstractType
                 "label" => "Durée en minute",
                 "required" => true
             ])
-            ->add('synopsis', CKEditorType::class)
+            ->add('synopsis', TextareaType::class, ["label" => "Synopsis", "required" => false])
             ->add('recompense', TextType::class, ["label" => "Récompense", "required" => false])
             ->add('distributeur', TextType::class, ["label" => "Distributeur", "required" => true])
             ->add('coutLocation',  TextType::class, ["label" => "Location", "required" => false])

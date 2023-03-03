@@ -1,89 +1,9 @@
-// // API TMDB
-// const API_KEY         = 'api_key=20c7b8d480d4a435703ad88460e996a5&language=fr';
-// const BASE_URL        = 'https://api.themoviedb.org/3';
-// const SEARCH_URL         = BASE_URL + '/search/movie?' + API_KEY;
-// const API_URL        = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
-// console.log(API_URL);
-// console.log(SEARCH_URL);
-
-
-// const titreFilm         = document.getElementById('film1_titre');
-// let realisationFilm   = document.getElementById('film1_realisation');
-// let castingFilm       = document.getElementById('film1_casting');
-// let PaysFilm          = document.getElementById('film1_pays');
-// let DureeFilm         = document.getElementById('film1_duree');
-// let SynopsisFilm      = document.getElementById('film1_synopsis');
-// let RecompenseFilm    = document.getElementById('film1_recompense');
-
-// function getMovies(url) {
-//     fetch(url).then(res => res.json()).then(data => {
-//         showMovies(data.results);
-//     })
-    
-//     function showMovies(data) {
-        
-//     }
-// getMovies(API_URL);
-
-// async function recupererFilm() {
-//     const requete = await fetch(API_URL, {
-//         method: 'GET'
-//     });
-
-//     if (!requete.ok) {
-//         alert('Un problème est survenu.');
-//     } else {
-//         donnees = await requete.json();
-//         console.log(donnees);
-//         remplirFilm();
-//     }
-
-    // function remplirFilm(donnees){
-    //     let donneesFilm = '';
-    //     let {title, runtime, overview} = donneesFilm;
-    //     titreFilm.textContent = donnees.donneesFilm.title;
-    // }
-// }
-// async function recupererFilm() {
-//     const requete = await fetch(SEARCH_URL, {
-//         method: 'GET'
-//     });
-
-//     if (!requete.ok) {
-//         alert('Un problème est survenu.');
-//     } else {
-//         donnees = await requete.json();
-//         console.log(donnees);
-//         remplirFilm();
-//     }
-
-    // function remplirFilm(donnees){
-    //     let donneesFilm = '';
-    //     let {title, runtime, overview} = donneesFilm;
-    //     titreFilm.textContent = donnees.donneesFilm.title;
-    // }
-// }
-// let {title, runtime, overview} = donneesFilm;
-// titreFilm.textContent= donneesFilm.title;
-
-    // titreFilmInput.addEventListener('submit', (e) => {
-    //     e.preventDefault();
-
-    //     const chercherTitre = titreFilmInput+value;
-
-    //     if(chercherTitre){
-    //         recupererFilm(API_URL+'&query='+chercherTitre)
-    //     }
-    // })
-
-// recupererFilm();
-
-
 const APIMOVIE         = '20c7b8d480d4a435703ad88460e996a5';
 const URLAPIMOVIE = `https://api.themoviedb.org/3/search/movie?api_key=${APIMOVIE}&language=fr&region=FR&include_image_language=fr&query=`;
 const AFFICHESDIRECTORY = 'https://image.tmdb.org/t/p/w500';
 
-console.log(URLAPIMOVIE);
+// console.log(URLAPIMOVIE);
+
 
 let rechercherFilm = (titre, callback, page = 1) => {
     fetch(URLAPIMOVIE + titre + '&page=' + page)
@@ -98,19 +18,119 @@ let detailsFilm = (idFilm, callback) => {
         .then(datas => callback(datas))
         .catch(error => console.log(error));
 };
+
+let creditFilm = (idFilm, callback) => {
+    fetch(`https://api.themoviedb.org/3/movie/${idFilm}/credits?api_key=${APIMOVIE}&language=fr&region=FR&include_image_language=fr`)
+        .then(reponse => reponse.json())
+        .then(datas => callback(datas))
+        .catch(error => console.log(error));
+};
+
+let titre        = document.querySelector('#film1_titre');
+let synopsis     = document.querySelector('#film1_synopsis');
+let pays         = document.querySelector('#film1_pays');
+let casting      = document.querySelector('#film1_casting');
+let duree        = document.querySelector('#film1_duree');
+let recompenses  = document.querySelector('#film1_recompense');
+let realisation  = document.querySelector('#film1_realisation');
+let distributeur = document.querySelector('#film1_distributeur');
+let coutLocation = document.querySelector('#film1_coutLocation');
+let inputs       = document.querySelectorAll('input');
+
+// si l'input qui à l'ID recherche existe alors
 if (document.getElementById('recherche')) {
 
-
+    // je selectionne le bouton qui à l'ID lancerRecherche et je lui ajoute un ecouteur d'evenement de type click
     document.getElementById('lancerRecherche').addEventListener('click', () => {
-        filmARechercher = document.getElementById('recherche').value.trim();
-        if (filmARechercher.length >= 2) {
+        // je creer une variable raccourcis qui va récuperer la demande de l'utilisateur dans filmARechercher
+        // à l'intérieur de recherche je cherche sa valeur (value), trim sert à retirer les espaces parasites
+        let filmARechercher = document.getElementById('recherche').value.trim();
+            // J'appel la function rechercherFilm qui a en parametre filmARechercher, et une fonction de callback qui va récuperer les datas
             rechercherFilm(filmARechercher, (datas) => {
+                //je regarde ce que me renvoie l'API
                 console.log(datas);
-                page = 1;
-                totalPages = datas.total_pages;
-                genereFiches(datas);
+                // Je vide ma div resulat (si une demande à déja etait faite)
+                document.getElementById('resultats').innerHTML= '';
+                //si j'ai un resulat, (si j'ai des datas)
+                if(datas.total_results > 0){
+                    //J'affiche les données que je souhaite, je fait une boucle
+                    // Si i=0 et si i est < au nombre de resultats(datas.results.length(la taille du tableau)) alors on boucle et on ajoute 1 à i
+                    for(let i=0; i < datas.results.length; i++){
+                        // Je creer une div
+                        let ficheFilm = document.createElement('div');
+                        // Dans cette div je met le titre
+                        ficheFilm.innerHTML = datas.results[i].title;
+                        // j'ajoute la classe fiche_film a mes div
+                        ficheFilm.classList.add('fiche_film');
+
+                        // je recupére les datas via la fonction detailsFilm
+                        // j'ajoute un evenement click a ma div ficheFilm
+                        ficheFilm.addEventListener('click', ()=>{
+                            
+                            // j'exécute la fonction detailsFilm avec l'id des films dans datas.result et je stock le resultat dans detailsDatas
+                            detailsFilm(datas.results[i].id, (detailsDatas) => {
+                                console.log(detailsDatas);
+                                // je stock la donnée que je veux dans une variable
+                                let titreFilm = detailsDatas.title;
+                                //j'ajoute un attribut "value" à l'imput ciblé, puis j'y insére ma donnée
+                                titre.setAttribute("value", titreFilm);
+                                let synopsisFilm = detailsDatas.overview;
+                                synopsis.innerHTML = synopsisFilm;
+                                // synopsis.setAttribute("value", synopsisFilm);
+                                let dureeFilm = detailsDatas.runtime;
+                                duree.setAttribute("value", dureeFilm);
+
+                                let paysFilm = "";
+                                for (let i=0; i <= detailsDatas.production_countries.length-1; i++){
+                                    if (paysFilm = "") {
+                                        paysFilm = detailsDatas.production_countries[i].name;
+                                    }else {
+                                        paysFilm = paysFilm + ", " + detailsDatas.production_countries[i].name;
+                                    }
+                                    console.log(paysFilm);
+                                };
+                                pays.setAttribute("value", paysFilm);
+                                
+                            });
+
+                            creditFilm(datas.results[i].id, (creditsDatas) => {
+                                console.log(creditsDatas)
+                                let castingFilm = creditsDatas.cast[0].name + ', ' + creditsDatas.cast[1].name + ', ' + creditsDatas.cast[2].name + ', ' +creditsDatas.cast[3].name;
+                                casting.setAttribute("value", castingFilm);
+                                let realisationFilm = creditsDatas.crew[0].name;
+                                realisation.setAttribute("value", realisationFilm);
+                            })
+                            
+                        })
+                        // inputs.forEach(inputs => inputs.value = '');
+                        
+                        //si il n'y a pas d'affiche, on rend une image, image not found
+                        if(datas.results[i].poster_path != null){
+                            //Je creer l'image, qui est un element de type img que j'ajoute au DOM
+                            let affiche = document.createElement('img');
+                            // j'u ajoute un attribut src, la source est composé de la constante AFFICHESDIRECTORY concaténé a poster_path 
+                            affiche.setAttribute('src', AFFICHESDIRECTORY + datas.results[i].poster_path);
+                            // j'ajoute cette image à la fiche 
+                            ficheFilm.appendChild(affiche);
+                        }else{
+                            let affiche = document.createElement('img');
+                            affiche.setAttribute('src', "../image/no-image-found.jpeg");
+                            ficheFilm.appendChild(affiche);
+                        }
+                        // Cet div je l'ajoute à ma div résulstat
+                        document.getElementById('resultats').appendChild(ficheFilm);
+
+                        // let filmChoisit = document.
+                    }
+                } else {
+                    // Si non j'affiche dans resultat, Pas de films trouvé
+                    document.getElementById('resutats').innerHTML='Pas de films trouvé';
+                }
             });
-        }
+    
     });
 
-}
+
+    }
+
+    
